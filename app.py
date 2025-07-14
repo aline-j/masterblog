@@ -54,5 +54,19 @@ def add():
 
     return render_template('add.html')
 
+# Delete Route
+@app.route('/delete/<int:post_id>')
+def delete(post_id):
+    posts = load_posts()
+
+    filtered_posts = []
+    for post in posts:
+        if post["id"] != post_id:
+            filtered_posts.append(post)
+
+    save_posts(filtered_posts)
+    return redirect(url_for('index'))
+
+
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=8000, debug=True)
