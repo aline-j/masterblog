@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, request, render_template
 import json
 import os
 
@@ -6,7 +6,7 @@ app = Flask(__name__)
 DATA_FILE = 'blog_posts.json'
 
 
-# Load blog posts from JSON file
+# Load blog posts from the JSON file
 def load_posts():
     if not os.path.exists(DATA_FILE):
         return []
@@ -14,17 +14,17 @@ def load_posts():
         return json.load(f)
 
 
-# Save blog posts to JSON file
+# Save blog posts to the JSON file
 def save_posts(posts):
     with open(DATA_FILE, 'w', encoding='utf-8') as f:
-        json.dump(posts, f, indent=4)
+        json.dump(posts, f, indent=4, ensure_ascii=False)
 
 
-# Route to get all posts
-@app.route('/posts', methods=['GET'])
-def get_posts():
+# Index Route
+@app.route('/')
+def index():
     posts = load_posts()
-    return jsonify(posts)
+    return render_template('index.html', posts=posts)
 
 
 if __name__ == '__main__':
