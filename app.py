@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, redirect, url_for
 import json
 import os
 
@@ -26,12 +26,33 @@ def index():
     posts = load_posts()
     return render_template('index.html', posts=posts)
 
+# Add Route
 @app.route('/add', methods=['GET', 'POST'])
 def add():
     if request.method == 'POST':
-        pass
-    return render_template('add.html')
+        posts = load_posts()
+        # Collect all IDs
+        ids = []
+        for post in posts:
+            ids.append(post['id'])
+        # Determine next ID
+        if ids:
+            new_id = max(ids) + 1
+        else:
+            new_id = 1
 
+        new_post = {
+            'id': new_id,
+            'author': request.form.get('author'),
+            'title': request.form.get('title'),
+            'content': request.form.get('content')
+        }
+
+        posts.append(new_post)
+        save_posts(posts)
+        return redirect(url_for('index'))
+
+    return render_template('add.html')
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=8000, debug=True)
