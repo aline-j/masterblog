@@ -79,6 +79,9 @@ def update(post_id):
             post = post_in_list
             break
 
+    if post is None:
+        return "Post not found", 404
+
     if request.method == 'POST':
         # Form has been submitted → Update data
         post["author"] = request.form.get("author")
